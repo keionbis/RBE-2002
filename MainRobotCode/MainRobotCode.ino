@@ -1,6 +1,8 @@
 #define DEBUG_PRINT //used to enable debug print statements
 #include <digitalIOPerformance.h>
 #include <LiquidCrystal.h>
+#include <SoftWire.h>
+#include <SoftI2CMaster.h>
 #include "DrivePWM.h"
 #include "WallMath.h"
 #include "PID.h"
@@ -10,10 +12,14 @@
 #include "RobotOdometry.h"
 #include "DriveController.h"
 #include "GlobalInstances.h"
+#include "IRCamera.h"
+
+SoftWire* Wire = SoftWire::getInstance();
 
 void setup() {
   DebugBegin();
   DebugPrintln("Serial started");
+  IRCamera::getInstance() -> init();
   lcd.begin(16,2);
   lcd.print("Standby");
   lcd.setCursor(0,1);
@@ -48,10 +54,30 @@ void loop() {
   myDriveControl->update();
   computeOdometry();
   manageLCD();
-/*  DebugPrint(getXLoc()); //mm
-  DebugPrint('\t');
-  DebugPrint(getYLoc()); //mm
-  DebugPrint('\t');
-  DebugPrintln(getTheta()*(180/PI)); //deg*/
 }
+
+extern void I2Cbegin() {
+  Wire->begin();
+}
+
+extern void I2CrequestFrom(uint8_t address, uint8_t quantity) {
+  Wire->requestFrom(address, quantity);
+}
+extern void I2CbeginTransmission(byte address) {
+  Wire->beginTransmission(address);
+}
+extern void I2CendTransmission() {
+  Wire->endTransmission();
+}
+extern void I2Cwrite(byte value) {
+  Wire->write(value);
+}
+extern bool I2Cavailable() {
+  return Wire->available();
+}
+extern byte I2Cread() {
+  return Wire->read();
+}
+
+
 

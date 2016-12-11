@@ -8,7 +8,6 @@ extern ForwardState* myForwardState=NULL;
 extern TurnState* myTurnState=NULL;
 extern SpecCaseState* mySpecCaseState=NULL;
 
-
 extern void initalizeInstances() {
   myDriveControl = DriveController::getInstance();
   myDriveControl->setup();
