@@ -9,4 +9,6 @@
 #define RIGHT_ENC_CHAN_B 3
 #define RIGHT_ENC_REV 0
 
+#define FAN_PIN 9
+
 #endif

@@ -1,6 +1,8 @@
 #define DEBUG_PRINT //used to enable debug print statements
 #include <digitalIOPerformance.h>
 #include <LiquidCrystal.h>
+#include <Servo.h>
+#include "Fan.h"
 #include "DrivePWM.h"
 #include "WallMath.h"
 #include "PID.h"
@@ -11,7 +13,14 @@
 #include "DriveController.h"
 #include "GlobalInstances.h"
 
+Fan* fan;
+
 void setup() {
+// delay(1000);
+  fan = Fan::getInstance();
+  fan->init();
+  delay(100);
+  fan->setPwr(0);
   DebugBegin();
   DebugPrintln("Serial started");
   lcd.begin(16,2);
@@ -20,6 +29,8 @@ void setup() {
   lcd.print("Hello World!");
   wallInit();
   initalizeInstances();
+  delay(1000);
+  
 }
 
 void loop() {
@@ -48,6 +59,7 @@ void loop() {
   myDriveControl->update();
   computeOdometry();
   manageLCD();
+  
 /*  DebugPrint(getXLoc()); //mm
   DebugPrint('\t');
   DebugPrint(getYLoc()); //mm
