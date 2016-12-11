@@ -17,7 +17,7 @@ void TurnState::handle() {
   float currentHeading = getTheta();
   float absError = abs(currentHeading-targetTurnHeading);
   if(absError>PI) absError = (2*PI)-absError;
-  long long pidOut = abs(turnPid -> compute(0,abs(currentHeading)*10000)); //scaled because pid uses long longs
+  long long pidOut = abs(turnPid -> compute(0,abs(absError)*10000)); //scaled because pid uses long longs
   if((targetTurnHeading>currentHeading) xor (abs(targetTurnHeading-currentHeading)>PI))
   {
     //turn counter clockwise

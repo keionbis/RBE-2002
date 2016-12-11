@@ -59,7 +59,7 @@ static WallState getWallState(WallSide side) {// Add averaging if needed
   }
   d3 = IR_THREE_DIST(analogRead(A3)); //front sensor
   WallState newState;
-  if((d1>(25.4*7))&&(d2<(7*25.4)))
+  if(abs(d1-d2)>(25.4*6))
   {
     newState.specCase = true;
   }
@@ -71,6 +71,7 @@ static WallState getWallState(WallSide side) {// Add averaging if needed
   long k1 = sqrt((Y_SENS*Y_SENS)+((d2-d1)*(d2-d1)));
   newState.wallDist = calculateXOffset(d1,d2,k1);
   newState.theta = ((PI/2)-acos((d2-d1)/(float)Y_SENS));
+  Serial.println(d3);
   if(d3 > MAX_IR_DIST)
   {
     newState.frontDist = -1;
@@ -78,7 +79,8 @@ static WallState getWallState(WallSide side) {// Add averaging if needed
   }
   else
   {
-    newState.frontDist = calculateFrontDist(d3, k1); 
+    //newState.frontDist = calculateFrontDist(d3, k1); 
+    newState.frontDist = d3;
   }  
   return newState;
 }

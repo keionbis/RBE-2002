@@ -33,6 +33,7 @@ void loop() {
     mySpecCaseState->handle();
     break;
     case WALL_FOLLOW:
+    //Serial.println("Test");
     myWallState -> handle();
     break;
     case TURN:
@@ -45,7 +46,7 @@ void loop() {
     break;
   }
   myDriveControl->update();
-  computeOdometry(myDriveControl);
+  computeOdometry();
   manageLCD();
 /*  DebugPrint(getXLoc()); //mm
   DebugPrint('\t');

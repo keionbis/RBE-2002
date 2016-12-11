@@ -28,7 +28,8 @@ static void manageLCD() {
     char buf[25];
     long x = getXLoc()/25.4;
     long theta = (getTheta()*180/PI);
-    sprintf(buf,"x: %d in h: %d deg",x,theta);
+    Serial.println(theta);
+    sprintf(buf,"x: %ld h: %ld",x,theta);
     lcd.print(buf);
     lcd.setCursor(0,1);
     char bufTwo[25];
@@ -36,19 +37,19 @@ static void manageLCD() {
     switch(currentState)
     {
       case STANDBY:
-      sprintf(bufTwo,"y: %d in stan",y);
+      sprintf(bufTwo,"y:%d stan",y);
       break;
       case WALL_FOLLOW:
-      sprintf(bufTwo,"y: %d in wall",y);
+      sprintf(bufTwo,"y:%d wall",y);
       break;
       case FORWARD_DIST:
-      sprintf(bufTwo,"y: %d in forw",y);
+      sprintf(bufTwo,"y:%d forw",y);
       break;
       case TURN:
-      sprintf(bufTwo,"y: %d in turn",y);
+      sprintf(bufTwo,"y:%d turn",y);
       break;
       case SPEC_CASE:
-      sprintf(bufTwo,"y: %d in spec",y);
+      sprintf(bufTwo,"y:%d spec",y);
       default:
       break;
       

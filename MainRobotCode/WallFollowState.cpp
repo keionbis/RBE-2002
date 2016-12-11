@@ -20,8 +20,9 @@ void WallFollowState::handle() {
   {
     lastLoopTime = micros();
     WallState newState = getWallState(RIGHT_WALL);
-    //DebugPrintln((newState.frontDist < (25.4*10))&&(newState.frontDist>5));
-    if(newState.frontDist < (25.4*6))
+    //Serial.println(newState.frontDist);
+    //delay(10);
+    if(newState.frontDist < (25.4*8) && newState.frontDist>(4*25.4))
     {
       myDriveControl->stop(); //stop if wall in front is too close
       if(startTurn == false)

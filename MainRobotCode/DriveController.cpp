@@ -50,6 +50,9 @@ void DriveController::update() { //called each time in loop
       lastLeftPwr = 0;
     if(rightSetpoint == 0)
       lastRightPwr = 0;
+    /*Serial.print(lastLeftPwr);
+    Serial.print('\t');
+    Serial.println(lastRightPwr);*/
     if(lastLeftPwr > 0)
     {
       setDrivePWM((unsigned int)lastLeftPwr, LEFT,FORWARD);

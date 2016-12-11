@@ -14,7 +14,7 @@ struct RobotPos {
 };
 static RobotPos myPosition;
 
-void computeOdometry(DriveController* myController); //called as fast as possible, it handles timing
+void computeOdometry(); //called as fast as possible, it handles timing
 
 long getXLoc();//Returns value in mm
 long getYLoc();//Returns value in mm
