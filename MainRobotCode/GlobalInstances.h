@@ -1,4 +1,4 @@
-#if ~defined(GLOBAL_INSTANCES_H)
+#ifndef GLOBAL_INSTANCES_H
 #define GLOBAL_INSTANCES_H
 
 #include "DriveController.h"
@@ -13,21 +13,14 @@ extern ForwardState* myForwardState;
 extern TurnState* myTurnState;
 extern SpecCaseState* mySpecCaseState;
 
-static void initalizeInstances() {
-  myDriveControl = DriveController::getInstance();
-  myDriveControl->setup();
-  myWallState = WallFollowState::getInstance();
-  myForwardState = ForwardState::getInstance();
-  myTurnState = TurnState::getInstance();
-  mySpecCaseState = SpecCaseState::getInstance();
-}
+extern void initalizeInstances();
 
-enum RobotState {
-  WALL_FOLLOW=1,
-  TURN=2,
-  STANDBY=3,
-  SPEC_CASE=4, //Detected that front wall sensor maxed and other isn't
-  FORWARD_DIST=5
+typedef enum RobotState {
+  WALL_FOLLOW,
+  TURN,
+  STANDBY,
+  SPEC_CASE, //Detected that front wall sensor maxed and other isn't
+  FORWARD_DIST
 };
 
 extern RobotState currentState;
