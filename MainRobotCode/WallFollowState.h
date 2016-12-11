@@ -19,6 +19,6 @@ private:
   PID* wallOffsetPid;
   PID* wallThetaPid;
   
-  static const long long WALL_OFFSET_SETPOINT = (long)10*25.4;
+  static const long long WALL_OFFSET_SETPOINT = (long)9.5*25.4;
 };
 #endif

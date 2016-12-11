@@ -33,7 +33,7 @@ void SpecCaseState::handle() {
     case FORWARD_SECOND:
     previousState = currentState;
     //set forward target
-    myForwardState->setForwardTarget(25.4*22);
+    myForwardState->setForwardTarget(25.4*18);
     currentState = FORWARD_DIST;
     myState = TURN_SECOND;
     break;
@@ -47,7 +47,7 @@ void SpecCaseState::handle() {
     case FORWARD_THIRD:
     previousState = currentState;
     //set forward target
-    myForwardState->setForwardTarget(25.4*15);
+    myForwardState->setForwardTarget(25.4*12);
     currentState = FORWARD_DIST;
     myState = DONE;
     break;

@@ -59,7 +59,7 @@ static WallState getWallState(WallSide side) {// Add averaging if needed
   }
   d3 = IR_THREE_DIST(analogRead(A3)); //front sensor
   WallState newState;
-  if(abs(d1-d2)>(25.4*6))
+  if(abs(d1-d2)>(25.4*4))
   {
     newState.specCase = true;
   }

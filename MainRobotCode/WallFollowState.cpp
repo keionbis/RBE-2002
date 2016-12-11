@@ -11,8 +11,8 @@ WallFollowState::WallFollowState() {
   lastLoopTime = 0;
   walloffsetpidOut = 0;
   wallthetapidOut = 0;
-  wallOffsetPid = new PID(3000000,0,0);//600000
-  wallThetaPid = new PID(600000,0,0); 
+  wallOffsetPid = new PID(3000000,0,2000000);//600000
+  wallThetaPid = new PID(120000,0,0); 
 }
 
 void WallFollowState::handle() {
@@ -22,7 +22,7 @@ void WallFollowState::handle() {
     WallState newState = getWallState(RIGHT_WALL);
     //Serial.println(newState.frontDist);
     //delay(10);
-    if(newState.frontDist < (25.4*8) && newState.frontDist>(4*25.4))
+    if(newState.frontDist < (25.4*5.5) && newState.frontDist>(3*25.4))
     {
       myDriveControl->stop(); //stop if wall in front is too close
       if(startTurn == false)
