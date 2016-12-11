@@ -11,6 +11,7 @@
 #include "Rates.h"
 #include "RobotOdometry.h"
 #include "DriveController.h"
+
 #include "GlobalInstances.h"
 #include "IRCamera.h"
 
@@ -32,7 +33,7 @@ void loop() {
   switch(currentState)
   {
     case STANDBY://add btn later
-    //delay(1000);
+    delay(1000);
     currentState = WALL_FOLLOW;
     break;
     case SPEC_CASE:

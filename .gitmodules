@@ -1,0 +1,6 @@
+[submodule "libraries/SoftI2CMaster"]
+	path = libraries/SoftI2CMaster
+	url = https://github.com/felias-fogg/SoftI2CMaster.git
+[submodule "libraries/DFRRobotIRPosition"]
+	path = libraries/DFRRobotIRPosition
+	url = https://github.com/DFRobot/DFRobotIRPosition.git

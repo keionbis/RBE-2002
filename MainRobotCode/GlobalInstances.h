@@ -13,6 +13,7 @@ extern WallFollowState* myWallState;
 extern ForwardState* myForwardState;
 extern TurnState* myTurnState;
 extern SpecCaseState* mySpecCaseState;
+
 extern void initalizeInstances();
 
 extern void I2Cbegin();
