@@ -7,20 +7,13 @@
 #include "TurnState.h"
 #include "SpecCaseState.h"
 
-static DriveController* myDriveControl;
-static WallFollowState* myWallState;
-static ForwardState* myForwardState;
-static TurnState* myTurnState;
-static SpecCaseState* mySpecCaseState;
+extern DriveController* myDriveControl;
+extern WallFollowState* myWallState;
+extern ForwardState* myForwardState;
+extern TurnState* myTurnState;
+extern SpecCaseState* mySpecCaseState;
 
-static void initalizeInstances() {
-  myDriveControl = DriveController::getInstance();
-  myDriveControl->setup();
-  myWallState = WallFollowState::getInstance();
-  myForwardState = ForwardState::getInstance();
-  myTurnState = TurnState::getInstance();
-  mySpecCaseState = SpecCaseState::getInstance();
-}
+extern void initalizeInstances();
 
 typedef enum RobotState {
   WALL_FOLLOW,
@@ -30,7 +23,7 @@ typedef enum RobotState {
   FORWARD_DIST
 };
 
-static RobotState currentState = STANDBY;
-static RobotState previousState = STANDBY;
+extern RobotState currentState;
+extern RobotState previousState;
 
 #endif

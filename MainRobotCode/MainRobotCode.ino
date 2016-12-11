@@ -1,5 +1,6 @@
 #define DEBUG_PRINT //used to enable debug print statements
 #include <digitalIOPerformance.h>
+#include <LiquidCrystal.h>
 #include "DrivePWM.h"
 #include "WallMath.h"
 #include "PID.h"
@@ -13,6 +14,10 @@
 void setup() {
   DebugBegin();
   DebugPrintln("Serial started");
+  lcd.begin(16,2);
+  lcd.print("Standby");
+  lcd.setCursor(0,1);
+  lcd.print("Hello World!");
   wallInit();
   initalizeInstances();
 }
@@ -21,7 +26,7 @@ void loop() {
   switch(currentState)
   {
     case STANDBY://add btn later
-    delay(1000);
+    //delay(1000);
     currentState = WALL_FOLLOW;
     break;
     case SPEC_CASE:
@@ -41,6 +46,7 @@ void loop() {
   }
   myDriveControl->update();
   computeOdometry(myDriveControl);
+  manageLCD();
 /*  DebugPrint(getXLoc()); //mm
   DebugPrint('\t');
   DebugPrint(getYLoc()); //mm
