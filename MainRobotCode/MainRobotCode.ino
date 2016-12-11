@@ -1,6 +1,12 @@
 #define DEBUG_PRINT //used to enable debug print statements
 #include <digitalIOPerformance.h>
 #include <LiquidCrystal.h>
+#define SDA_PORT PORTD
+#define SDA_PIN 3
+#define SCL_PORT PORTD
+#define SCL_PIN 5
+#define I2C_NOINTERRUPT 1
+#include <SoftWire.h>
 #include "DrivePWM.h"
 #include "WallMath.h"
 #include "PID.h"
@@ -9,7 +15,11 @@
 #include "Rates.h"
 #include "RobotOdometry.h"
 #include "DriveController.h"
+
 #include "GlobalInstances.h"
+#include "DFRobotIRPosition.h"
+#include "IRCamera.h"
+
 
 void setup() {
   DebugBegin();
@@ -26,7 +36,7 @@ void loop() {
   switch(currentState)
   {
     case STANDBY://add btn later
-    //delay(1000);
+    delay(1000);
     currentState = WALL_FOLLOW;
     break;
     case SPEC_CASE:
@@ -34,6 +44,7 @@ void loop() {
     break;
     case WALL_FOLLOW:
     myWallState -> handle();
+    sweepIRCamera();
     break;
     case TURN:
     myTurnState->handle();
@@ -47,10 +58,5 @@ void loop() {
   myDriveControl->update();
   computeOdometry(myDriveControl);
   manageLCD();
-/*  DebugPrint(getXLoc()); //mm
-  DebugPrint('\t');
-  DebugPrint(getYLoc()); //mm
-  DebugPrint('\t');
-  DebugPrintln(getTheta()*(180/PI)); //deg*/
 }
 
