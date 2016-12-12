@@ -23,7 +23,7 @@ IRCamera::IRTarget IRCamera::getTarget() { //returns the flame target or -1,-1 i
     Serial.print(targets[i].yPos);
     Serial.print('\t');*/
   }
-  Serial.println(' ');
+//  Serial.println(' ');
   return newTarget;
 }
 void IRCamera::init() { //sets up camera
@@ -72,6 +72,21 @@ void IRCamera::readTargets() {
     targets[3].size = data_buf[12];
     targets[3].xPos = ((data_buf[12] & 0x30) <<4)|data_buf[10];
     targets[3].yPos = ((data_buf[12] & 0xC0) <<2)|data_buf[11];
+    Serial.print(targets[0].xPos);
+        Serial.print(',');
+    Serial.print(targets[0].yPos);
+        Serial.print(',');
+    Serial.print(targets[1].xPos);
+        Serial.print(',');
+    Serial.print(targets[1].yPos);
+        Serial.print(',');
+    Serial.print(targets[2].xPos);
+        Serial.print(',');
+    Serial.print(targets[2].yPos);
+        Serial.print(',');
+    Serial.print(targets[3].xPos);
+        Serial.print(',');
+    Serial.println(targets[3].yPos);
 }
 void IRCamera::writeTwoIICByte(uint8_t first, uint8_t second)
 {
