@@ -1,5 +1,8 @@
 #include "IRCamera.h"
 #include "GlobalInstances.h"
+
+static const float PIXELS_TO_RAD = 0.0201600448;
+
 IRCamera::IRCamera() {
   
 }
@@ -8,6 +11,8 @@ IRCamera::IRTarget IRCamera::getTarget() { //returns the flame target or -1,-1 i
   newTarget.xPos = -1;
   newTarget.yPos = -1;
   newTarget.size = -1;
+  newTarget.xAngle = -1;
+  newTarget.yAngle = -1;
   readTargets(); //updates targets
   for(int i = 0;i<4;i++)
   {
@@ -16,14 +21,11 @@ IRCamera::IRTarget IRCamera::getTarget() { //returns the flame target or -1,-1 i
       newTarget.xPos = targets[i].xPos;
       newTarget.yPos = targets[i].yPos;
       newTarget.size = targets[i].size;
+      newTarget.xAngle = targets[i].xAngle;
+      newTarget.yAngle = targets[i].yAngle;        
       return newTarget;
     }
-    /*Serial.print(targets[i].xPos);
-    Serial.print(',');
-    Serial.print(targets[i].yPos);
-    Serial.print('\t');*/
   }
-//  Serial.println(' ');
   return newTarget;
 }
 void IRCamera::init() { //sets up camera
@@ -72,21 +74,14 @@ void IRCamera::readTargets() {
     targets[3].size = data_buf[12];
     targets[3].xPos = ((data_buf[12] & 0x30) <<4)|data_buf[10];
     targets[3].yPos = ((data_buf[12] & 0xC0) <<2)|data_buf[11];
-    Serial.print(targets[0].xPos);
-        Serial.print(',');
-    Serial.print(targets[0].yPos);
-        Serial.print(',');
-    Serial.print(targets[1].xPos);
-        Serial.print(',');
-    Serial.print(targets[1].yPos);
-        Serial.print(',');
-    Serial.print(targets[2].xPos);
-        Serial.print(',');
-    Serial.print(targets[2].yPos);
-        Serial.print(',');
-    Serial.print(targets[3].xPos);
-        Serial.print(',');
-    Serial.println(targets[3].yPos);
+    
+    for(int i = 0;i<4;i++)
+    {
+        float x = (128/2.0)-((targets[i].xPos/1023.0)*128);
+        float y = (96/2.0)-((targets[i].yPos/767.25)*96);
+      targets[i].xAngle = x*PIXELS_TO_RAD;
+      targets[i].yAngle = y*PIXELS_TO_RAD;
+    }
 }
 void IRCamera::writeTwoIICByte(uint8_t first, uint8_t second)
 {

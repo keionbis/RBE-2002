@@ -22,7 +22,7 @@ Servo tilt;
 void setup() {
   pan.attach(7);
   tilt.attach(4);
-  pan.write(50);
+  pan.write(40);
   tilt.write(50);
   DebugBegin();
   DebugPrintln("Serial started");
@@ -38,39 +38,39 @@ void setup() {
 
 void loop() {
   
-  /*for(int p = 0;p<=110;p+= 10)
+  for(int p = 70;p<=170;p+= 10)//(int p = 30;p<=170;p+= 10)
   {
-    for(int t = 30;t<=90; t+=1)
+    for(int t = 40;t<=75; t+=1)
     {
       pan.write(p);
       tilt.write(t);
-      delay(15);
-      int xPosSamples[10];
-      int yPosSamples[10];
-      long xSum = 0;
-      long ySum = 0;
+      delay(75);
+      float xAngleSamples[10];
+      float yAngleSamples[10];
+      float xSum = 0;
+      float ySum = 0;
       int total = 0;
       for(int sample = 0;sample<10;sample++)
       {
         IRCamera::IRTarget newTarget = IRCamera::getInstance()->getTarget();
-        xPosSamples[sample] = newTarget.xPos;
-        yPosSamples[sample] = newTarget.yPos;
-        xSum += newTarget.xPos;
-        ySum += newTarget.yPos;
+        xAngleSamples[sample] = newTarget.xAngle;
+        yAngleSamples[sample] = newTarget.yAngle;
+        xSum += newTarget.xAngle;
+        ySum += newTarget.yAngle;
         total++;  
       }
       float xMean = xSum/(float)total;
       float yMean = ySum/(float)total;
-      long xSumFiltered = 0;
-      long ySumFiltered = 0;
+      float xSumFiltered = 0;
+      float ySumFiltered = 0;
       int totalFiltered = 0;
       for(int sample =0;sample<10;sample++)
       {
-        if(!((abs(xMean-xPosSamples[sample]) > 100)||(abs(yMean-yPosSamples[sample]) > 100)||(xPosSamples[sample]<0)||(yPosSamples[sample]<0)))
+        if(xAngleSamples[sample] != -1)
         {
           //Good sample
-          xSumFiltered  += xPosSamples[sample];
-          ySumFiltered  += yPosSamples[sample];
+          xSumFiltered  += xAngleSamples[sample];
+          ySumFiltered  += yAngleSamples[sample];
           totalFiltered++;
         }
       } 
@@ -85,8 +85,13 @@ void loop() {
         Serial.println(yMeanFiltered);
       
     }
-  }*/
-  IRCamera::IRTarget newTarget = IRCamera::getInstance()->getTarget();
+    for(int t = 75;t>40; t-=1)
+    {
+            tilt.write(t);
+            delay(10);
+    }
+  }
+  //IRCamera::IRTarget newTarget = IRCamera::getInstance()->getTarget();
           
 }
 
