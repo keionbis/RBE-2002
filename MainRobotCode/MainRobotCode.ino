@@ -17,11 +17,13 @@
 #include "IRCamera.h"
 
 SoftWire* Wire = SoftWire::getInstance();
+void handleCandleSearch();
+
 Servo pan;
 Servo tilt;
 void setup() {
   pan.attach(7);
-  tilt.attach(4);
+  tilt.attach(11);
   pan.write(40);
   tilt.write(50);
   DebugBegin();
@@ -33,67 +35,73 @@ void setup() {
   lcd.print("Hello World!");
   wallInit();
   initalizeInstances();
-  
 }
 
 void loop() {
-  
-  for(int p = 70;p<=170;p+= 10)//(int p = 30;p<=170;p+= 10)
+  switch(currentState)
   {
-    for(int t = 40;t<=75; t+=1)
-    {
-      pan.write(p);
-      tilt.write(t);
-      delay(75);
-      float xAngleSamples[10];
-      float yAngleSamples[10];
-      float xSum = 0;
-      float ySum = 0;
-      int total = 0;
-      for(int sample = 0;sample<10;sample++)
-      {
-        IRCamera::IRTarget newTarget = IRCamera::getInstance()->getTarget();
-        xAngleSamples[sample] = newTarget.xAngle;
-        yAngleSamples[sample] = newTarget.yAngle;
-        xSum += newTarget.xAngle;
-        ySum += newTarget.yAngle;
-        total++;  
-      }
-      float xMean = xSum/(float)total;
-      float yMean = ySum/(float)total;
-      float xSumFiltered = 0;
-      float ySumFiltered = 0;
-      int totalFiltered = 0;
-      for(int sample =0;sample<10;sample++)
-      {
-        if(xAngleSamples[sample] != -1)
-        {
-          //Good sample
-          xSumFiltered  += xAngleSamples[sample];
-          ySumFiltered  += yAngleSamples[sample];
-          totalFiltered++;
-        }
-      } 
-        float xMeanFiltered = xSumFiltered/(float)totalFiltered;
-        float yMeanFiltered = ySumFiltered/(float)totalFiltered;
-        Serial.print(p);
-        Serial.print(',');
-        Serial.print(t);
-        Serial.print(',');
-        Serial.print(xMeanFiltered);
-        Serial.print(',');
-        Serial.println(yMeanFiltered);
-      
-    }
-    for(int t = 75;t>40; t-=1)
-    {
-            tilt.write(t);
-            delay(10);
-    }
+    case STANDBY://add btn later
+    delay(1000);
+    currentState = WALL_FOLLOW;
+    break;
+    case SPEC_CASE:
+    mySpecCaseState->handle();
+    break;
+    case WALL_FOLLOW:
+    myWallState -> handle();
+    break;
+    case TURN:
+    myTurnState->handle();
+    break;
+    case FORWARD_DIST:
+    myForwardState->handle();
+    break;
+    case CANDLE:
+    break;
+    default:
+    break;
   }
-  //IRCamera::IRTarget newTarget = IRCamera::getInstance()->getTarget();
-          
+  myDriveControl->update();
+  computeOdometry();
+  manageLCD();
+  Serial.println(getXLoc());
+  //handleCandleSearch();
 }
+
+void handleCandleSearch() {
+  if(currentState != CANDLE)
+  {
+    static int tPos = 45;
+    pan.write(35);
+    static long long lastChange = 0;
+    static bool goingUp = true;
+    if((millis()-lastChange) > 10)
+    {
+      lastChange = millis();
+      if(goingUp)
+        tPos++;
+      else
+        tPos--;
+      
+      if(tPos>74)
+        goingUp = false;
+      else if(tPos<44)
+        goingUp = true;
+      tilt.write(tPos);
+    }
+    IRCamera::IRTarget newTarget = IRCamera::getInstance()->getTarget();
+    /*Serial.print(newTarget.xPos);
+    Serial.print(',');
+    Serial.println(newTarget.yPos);*/
+    if(newTarget.xPos !=-1)
+    {
+      myDriveControl->setBothSetpoints(0,0);
+      previousState = currentState;
+      currentState = CANDLE;
+    } 
+  }
+}
+
 
 extern void I2Cbegin() {
   Wire->begin();
