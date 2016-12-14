@@ -57,6 +57,46 @@ void loop() {
     myForwardState->handle();
     break;
     case CANDLE:
+    static long long cTime = 0;
+    static int X_SET = 384; 
+    static int Y_SET = 512;
+    static int tiltOut  = 45;
+    static int panOut  = 50;
+    if(millis()-cTime>75)
+    {
+      cTime = millis();
+      static IRCamera::IRTarget newTarget = IRCamera::getInstance()->getTarget();
+      newTarget = IRCamera::getInstance()->getTarget();
+      if(newTarget.xPos!=-1)
+      {
+        int xError = newTarget.xPos-X_SET;
+        int yError = newTarget.yPos-Y_SET;
+        int diffX = xError/25;
+        int diffY = yError/25;
+        tiltOut-=diffX;
+        tiltOut = constrain(tiltOut,45,75);
+        tilt.write(tiltOut);
+        panOut-=diffY;
+        panOut = constrain(panOut,50,170);
+        pan.write(panOut);
+      }
+    }
+    static long long mTime = 0;
+    static bool aimedAtCamera = false;
+    if(millis()-mTime > 10 && !aimedAtCamera)
+    {
+      mTime = millis();
+      int error = 125-panOut; //pos-left of center
+      float turnPID = error/125.0; 
+      myDriveControl->setBothSetpoints(-1*DriveController::DEFAULT_SETPOINT*turnPID,DriveController::DEFAULT_SETPOINT*turnPID);
+      Serial.println(panOut);
+    }
+    if(abs(panOut-125) < 5)
+    {
+      aimedAtCamera = true;
+      myDriveControl->setBothSetpoints(0,0);
+      Serial.println("Centered at Camera");
+    }
     break;
     default:
     break;
@@ -64,8 +104,8 @@ void loop() {
   myDriveControl->update();
   computeOdometry();
   manageLCD();
-  Serial.println(getXLoc());
-  //handleCandleSearch();
+  //Serial.println(getXLoc());
+  handleCandleSearch();
 }
 
 void handleCandleSearch() {
@@ -93,11 +133,14 @@ void handleCandleSearch() {
     /*Serial.print(newTarget.xPos);
     Serial.print(',');
     Serial.println(newTarget.yPos);*/
-    if(newTarget.xPos !=-1)
+    if(abs(newTarget.xPos-767.5)<10 || abs(newTarget.yPos-383.625)<10 )
     {
       myDriveControl->setBothSetpoints(0,0);
       previousState = currentState;
       currentState = CANDLE;
+      Serial.print(newTarget.xPos);
+      Serial.print('\t');
+            Serial.println(newTarget.yPos);
     } 
   }
 }

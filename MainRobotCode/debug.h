@@ -28,7 +28,7 @@ static void manageLCD() {
     char buf[25];
     long x = getXLoc()/25.4;
     long theta = (getTheta()*180/PI);
-    Serial.println(theta);
+    //Serial.println(theta);
     sprintf(buf,"x: %ld h: %ld",x,theta);
     lcd.print(buf);
     lcd.setCursor(0,1);

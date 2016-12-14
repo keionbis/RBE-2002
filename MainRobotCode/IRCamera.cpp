@@ -77,8 +77,8 @@ void IRCamera::readTargets() {
     
     for(int i = 0;i<4;i++)
     {
-        float x = (128/2.0)-((targets[i].xPos/1023.0)*128);
-        float y = (96/2.0)-((targets[i].yPos/767.25)*96);
+      float x = (128/2.0)-((targets[i].xPos/1023.0)*128);
+      float y = (96/2.0)-((targets[i].yPos/767.25)*96);
       targets[i].xAngle = x*PIXELS_TO_RAD;
       targets[i].yAngle = y*PIXELS_TO_RAD;
     }
