@@ -4,6 +4,7 @@
 #include <SoftWire.h>
 #include <SoftI2CMaster.h>
 #include <Servo.h>
+//#include "Fan.h"
 #include "DrivePWM.h"
 #include "WallMath.h"
 #include "PID.h"
@@ -21,11 +22,18 @@ void handleCandleSearch();
 
 Servo pan;
 Servo tilt;
+
+//Fan* fan;
+
 void setup() {
+// delay(1000);
   pan.attach(7);
   tilt.attach(11);
   pan.write(40);
   tilt.write(50);
+  /*fan = Fan::getInstance();
+  fan->init();*/
+  delay(1000);
   DebugBegin();
   DebugPrintln("Serial started");
   IRCamera::getInstance() -> init();
@@ -35,6 +43,7 @@ void setup() {
   lcd.print("Hello World!");
   wallInit();
   initalizeInstances();
+  
 }
 
 void loop() {
@@ -89,14 +98,33 @@ void loop() {
       int error = 125-panOut; //pos-left of center
       float turnPID = error/125.0; 
       myDriveControl->setBothSetpoints(-1*DriveController::DEFAULT_SETPOINT*turnPID,DriveController::DEFAULT_SETPOINT*turnPID);
-      Serial.println(panOut);
+      //Serial.println(panOut);
+      if(abs(panOut-125) < 5)
+      {
+        aimedAtCamera = true;
+        myDriveControl->setBothSetpoints(0,0);
+  /*      for(int i = 0;i<100;i++)
+        {
+          fan->setPwr(i);
+          delay(10);
+        }
+        fan->setPwr(0);*/
+        WallState newWallState = getWallState(RIGHT_WALL);
+        if(newWallState.frontDist >0)
+        {
+          //candle in range
+          candlex = cos(getTheta())*(newWallState.frontDist+(4.5*25.4));
+          candley = sin(getTheta())*(newWallState.frontDist+(4.5*25.4));
+          candlex += getXLoc();
+          candley += getYLoc();
+          candlex = candlex/25.4;
+          candley = candley/25.4;
+        }
+        Serial.print(newWallState.frontDist);
+        Serial.println("Centered at Camera");
+      }
     }
-    if(abs(panOut-125) < 5)
-    {
-      aimedAtCamera = true;
-      myDriveControl->setBothSetpoints(0,0);
-      Serial.println("Centered at Camera");
-    }
+    
     break;
     default:
     break;

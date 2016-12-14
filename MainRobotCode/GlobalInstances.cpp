@@ -16,3 +16,6 @@ extern void initalizeInstances() {
   myTurnState = TurnState::getInstance();
   mySpecCaseState = SpecCaseState::getInstance();
 }
+
+extern float candlex = 0;
+extern float candley = 0;

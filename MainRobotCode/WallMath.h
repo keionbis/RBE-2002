@@ -42,7 +42,7 @@ typedef struct WallState {
   bool specCase; //true if special case(front inf. and back not
 };
 
-static const long MAX_IR_DIST = 14*25.4; //mm
+static const long MAX_IR_DIST = 10*25.4; //mm
 static WallState getWallState(WallSide side) {// Add averaging if needed
   static long d1;
   static long d2;

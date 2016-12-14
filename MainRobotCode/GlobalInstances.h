@@ -36,4 +36,7 @@ typedef enum RobotState {
 extern RobotState currentState;
 extern RobotState previousState;
 
+extern float candlex;
+extern float candley;
+
 #endif
