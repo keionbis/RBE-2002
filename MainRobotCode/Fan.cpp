@@ -5,14 +5,9 @@ Fan::Fan():myServo() {
 }
 
 void Fan::init() {
-  myServo.attach(FAN_PIN,1000,2000);
+  myServo.attach(FAN_PIN);
   myServo.write(0);
-  delay(100);
-  //myServo.write(90);
-  //delay(100);
-  myServo.write(180);
-  delay(100);
-  myServo.write(0);
+  delay(1000);
 }
 
 void Fan::setPwr(unsigned int newPwr) {

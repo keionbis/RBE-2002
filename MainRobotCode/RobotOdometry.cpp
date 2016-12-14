@@ -1,6 +1,7 @@
 #include "RobotOdometry.h"
 #include "Arduino.h"
 #include "GlobalInstances.h"
+#include "L3G.h"
 
 void computeOdometry() { //called as fast as possible, it handles timing
   if((micros()-myPosition.lastOdometryTime) > ODOMETRY_PERIOD_US) //controls update rate
@@ -21,9 +22,26 @@ void computeOdometry() { //called as fast as possible, it handles timing
     
     float encDeltaTheta = ((rightDist-leftDist)/WHEEL_BASE)*1000; //mRad
     //Serial.println(myPosition.theta);
-    myPosition.theta += encDeltaTheta; //add gyrodometry here
+    
+    //gyro->read(); //update gyro vals
+    /*float degPerSecGyro = (gyro->g.x*micros()/250.0);
+    float degPerSecEnc = encDeltaTheta*(1000000/ODOMETRY_PERIOD_US)*180/PI;
+    float diff = abs(degPerSecGyro-degPerSecEnc);
+    if(diff > 900)
+    {
+      //use gyro
+      myPosition.theta += (gyro->g.x*micros()/250.0)*(1000000/ODOMETRY_PERIOD_US)*PI/180;
+      Serial.println("Gyro Error");
+    }
+    else
+    {*/
+      //don't use gyro
+      myPosition.theta += encDeltaTheta; //add gyrodometry here
+    //}
+    
     if(myPosition.theta > (2*PI*1000))
       myPosition.theta = myPosition.theta-(2*PI*1000);
+    
     
   }
 }

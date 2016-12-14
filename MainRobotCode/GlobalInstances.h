@@ -7,6 +7,7 @@
 #include "ForwardState.h"
 #include "TurnState.h"
 #include "SpecCaseState.h"
+#include "L3G.h"
 
 extern DriveController* myDriveControl;
 extern WallFollowState* myWallState;
@@ -19,10 +20,11 @@ extern void initalizeInstances();
 extern void I2Cbegin();
 extern void I2CrequestFrom(uint8_t address, uint8_t quantity);
 extern void I2CbeginTransmission(byte address);
-extern void I2CendTransmission();
+extern bool I2CendTransmission();
 extern void I2Cwrite(byte value);
 extern bool I2Cavailable();
 extern byte I2Cread();
+extern L3G* gyro;
 
 typedef enum RobotState {
   WALL_FOLLOW,
@@ -40,6 +42,7 @@ extern RobotState previousState;
 
 extern float candlex;
 extern float candley;
+extern float candlez;
 
 extern int leftWallX;
 extern int leftWally;

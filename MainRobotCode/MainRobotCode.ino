@@ -14,6 +14,8 @@
 #include "RobotOdometry.h"
 #include "DriveController.h"
 #include "TurnState.h"
+#include "Fan.h"
+#include "Pinout.h"
 
 #include "GlobalInstances.h"
 #include "IRCamera.h"
@@ -24,19 +26,33 @@ void handleCandleSearch();
 Servo pan;
 Servo tilt;
 
-//Fan* fan;
+Fan* fan;
 
 void setup() {
+  DebugBegin();
+  DebugPrintln("Serial started");
+  pinMode(START_BTN,INPUT_PULLUP);
+  pinMode(BTN_LIGHT,OUTPUT);
+  digitalWrite(BTN_LIGHT,LOW);
+  delay(1000);
+  while(digitalRead(START_BTN)) {delay(15);}
+  digitalWrite(BTN_LIGHT,HIGH);
+  Serial.println("Btn press");
+  /*if (!gyro->init()) // gyro init
+  {
+    Serial.println("Failed to autodetect gyro type!");
+    while (1); 
+  }
+  gyro->enableDefault(); // gyro init. default 250/deg/s*/
+  Serial.println("Gyro Done init");
 // delay(1000);
   pan.attach(7);
   tilt.attach(11);
   pan.write(40);
   tilt.write(50);
-  /*fan = Fan::getInstance();
-  fan->init();*/
-  delay(1000);
-  DebugBegin();
-  DebugPrintln("Serial started");
+  fan = Fan::getInstance();
+  fan->init();
+  Serial.println("Fan init");
   IRCamera::getInstance() -> init();
   lcd.begin(16,2);
   lcd.print("Standby");
@@ -44,7 +60,11 @@ void setup() {
   lcd.print("Hello World!");
   wallInit();
   initalizeInstances();
-  
+  for(int i = 0;i<100;i+=5)
+  {
+    fan->setPwr(i);
+    delay(15);
+  }  
 }
 bool returningHome = false;
 void loop() {
@@ -116,12 +136,13 @@ void loop() {
         WallState newWallState = getWallState(RIGHT_WALL);
         if(newWallState.frontDist >0)
         {
-          doneCandle = true;
-          previousState = currentState;
-          currentState = RWALL;
           myDriveControl->setBothSetpoints(0,0);
-          delay(1000);
           WallState newWallState = getWallState(RIGHT_WALL);
+          float angle = (-0.022481503*panOut) + 2.898327002;
+          float x_2 = 2.5+(-1*cos(PI-angle)*2.25);
+          float y_2 = 5.375+(sin(PI-angle)*2.25);
+          float x_3 = (0.0220155514*newWallState.frontDist)+9.661633531;
+          candlez = y_2+ (tan((PI/2.0)-angle)*(x_3-x_2));
           //candle in range
           candlex = cos(getTheta())*(newWallState.frontDist+(4.5*25.4)+(1.5*25.4));
           candley = sin(getTheta())*(newWallState.frontDist+(4.5*25.4)+(1.5*25.4));
@@ -129,6 +150,13 @@ void loop() {
           candley += getYLoc();
           candlex = candlex/25.4;
           candley = candley/25.4;
+          fan->setPwr(100);
+          delay(1000);
+          myDriveControl->setBothSetpoints(0,0);
+          doneCandle = true;
+          previousState = currentState;
+          currentState = RWALL;
+          fan->setPwr(0);
         }
         Serial.print(newWallState.frontDist);
         Serial.println("Centered at Camera");
@@ -227,8 +255,8 @@ extern void I2CrequestFrom(uint8_t address, uint8_t quantity) {
 extern void I2CbeginTransmission(byte address) {
   Wire->beginTransmission(address);
 }
-extern void I2CendTransmission() {
-  Wire->endTransmission();
+extern bool I2CendTransmission() {
+  return Wire->endTransmission();
 }
 extern void I2Cwrite(byte value) {
   Wire->write(value);

@@ -32,6 +32,7 @@ static void manageLCD() {
     long y = (getYLoc()/25.4);
     long cx = candlex;
     long cy = candley;
+    long cz = candlez;
     if(currentState == STANDBY)
     {
       sprintf(buf,"x: %ld h: %ld",x,theta);
@@ -59,7 +60,7 @@ static void manageLCD() {
     }
     else if(currentState== CANDLE)
     {
-      sprintf(buf,"x: %ld h: %ld",cx,theta);
+      sprintf(buf,"x: %ld z: %ld",cx,cz);
       sprintf(bufTwo,"y:%d candle",cy);
     }
     else if(currentState = RWALL)

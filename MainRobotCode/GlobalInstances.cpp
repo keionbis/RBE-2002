@@ -19,7 +19,9 @@ extern void initalizeInstances() {
 
 extern float candlex = 0;
 extern float candley = 0;
+extern float candlez = 0;
 
 extern int leftWallX = 0;
 extern int leftWally = 0;
 extern float leftWallTheta = 0;
+extern L3G* gyro = new L3G();

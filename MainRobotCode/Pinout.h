@@ -11,4 +11,7 @@
 
 #define FAN_PIN 9
 
+#define START_BTN 22
+#define BTN_LIGHT 23
+
 #endif
