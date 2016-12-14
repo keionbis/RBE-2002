@@ -13,6 +13,7 @@
 #include "Rates.h"
 #include "RobotOdometry.h"
 #include "DriveController.h"
+#include "TurnState.h"
 
 #include "GlobalInstances.h"
 #include "IRCamera.h"
@@ -45,27 +46,31 @@ void setup() {
   initalizeInstances();
   
 }
-
+bool returningHome = false;
 void loop() {
-  switch(currentState)
-  {
-    case STANDBY://add btn later
+  if(currentState == STANDBY)
+  { //add btn later
     delay(1000);
     currentState = WALL_FOLLOW;
-    break;
-    case SPEC_CASE:
+  }
+  else if(currentState == SPEC_CASE)
+  {
     mySpecCaseState->handle();
-    break;
-    case WALL_FOLLOW:
+  }
+  else if(currentState == WALL_FOLLOW)
+  {
     myWallState -> handle();
-    break;
-    case TURN:
+  }
+  else if(currentState == TURN)
+  {
     myTurnState->handle();
-    break;
-    case FORWARD_DIST:
+  }
+  else if(currentState == FORWARD_DIST)
+  {
     myForwardState->handle();
-    break;
-    case CANDLE:
+  }
+  else if(currentState == CANDLE)
+  {
     static long long cTime = 0;
     static int X_SET = 384; 
     static int Y_SET = 512;
@@ -112,12 +117,14 @@ void loop() {
         if(newWallState.frontDist >0)
         {
           doneCandle = true;
+          previousState = currentState;
+          currentState = RWALL;
           myDriveControl->setBothSetpoints(0,0);
           delay(1000);
           WallState newWallState = getWallState(RIGHT_WALL);
           //candle in range
-          candlex = cos(getTheta())*(newWallState.frontDist+(4.5*25.4));
-          candley = sin(getTheta())*(newWallState.frontDist+(4.5*25.4));
+          candlex = cos(getTheta())*(newWallState.frontDist+(4.5*25.4)+(1.5*25.4));
+          candley = sin(getTheta())*(newWallState.frontDist+(4.5*25.4)+(1.5*25.4));
           candlex += getXLoc();
           candley += getYLoc();
           candlex = candlex/25.4;
@@ -127,10 +134,38 @@ void loop() {
         Serial.println("Centered at Camera");
       }
     }
-    
-    break;
-    default:
-    break;
+  }
+  else if(currentState == RWALL)
+  {
+    static bool finishedTurnAround = false;
+    if(!finishedTurnAround)
+    {
+      finishedTurnAround = true;
+      myTurnState->setTurnHeading(getTheta()+PI);
+      previousState = currentState;
+      currentState = TURN;
+    }
+    else
+    {
+      WallState newWallState = getWallState(RIGHT_WALL);
+      myDriveControl->setBothSetpoints(DriveController::DEFAULT_SETPOINT,DriveController::DEFAULT_SETPOINT);
+      if(newWallState.frontDist>0)
+      {
+        myDriveControl->setBothSetpoints(0,0);
+        previousState = WALL_FOLLOW;
+        currentState = TURN;
+        returningHome = true;
+        myTurnState -> setTurnHeading(leftWallTheta);
+      }
+    }
+  }
+  if(returningHome)
+  {
+    if(abs(getXLoc()) <(25.4*3) && abs(getYLoc()) <(25.4*3))
+    {
+      myDriveControl->setBothSetpoints(0,0);
+      currentState = DONE;
+    }
   }
   myDriveControl->update();
   computeOdometry();
@@ -140,7 +175,8 @@ void loop() {
 }
 
 void handleCandleSearch() {
-  if(currentState != CANDLE)
+  static bool setCandle = false;
+  if(currentState != CANDLE && !setCandle)
   {
     static int tPos = 45;
     pan.write(35);
@@ -169,9 +205,13 @@ void handleCandleSearch() {
       myDriveControl->setBothSetpoints(0,0);
       previousState = currentState;
       currentState = CANDLE;
+      setCandle = true;
+      leftWallX = getXLoc();
+      leftWally = getYLoc();
+      leftWallTheta = getTheta();
       Serial.print(newTarget.xPos);
       Serial.print('\t');
-            Serial.println(newTarget.yPos);
+      Serial.println(newTarget.yPos);
     } 
   }
 }

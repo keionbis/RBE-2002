@@ -32,33 +32,40 @@ static void manageLCD() {
     long y = (getYLoc()/25.4);
     long cx = candlex;
     long cy = candley;
-    switch(currentState)
+    if(currentState == STANDBY)
     {
-      case STANDBY:
       sprintf(buf,"x: %ld h: %ld",x,theta);
       sprintf(bufTwo,"y:%d stan",y);
-      break;
-      case WALL_FOLLOW:
+    }
+    else if(currentState == WALL_FOLLOW)
+    {
       sprintf(buf,"x: %ld h: %ld",x,theta);
       sprintf(bufTwo,"y:%d wall",y);
-      break;
-      case FORWARD_DIST:
+    }
+    else if(currentState == FORWARD_DIST)
+    {
       sprintf(buf,"x: %ld h: %ld",x,theta);
       sprintf(bufTwo,"y:%d forw",y);
-      break;
-      case TURN:
+    }
+    else if(currentState == TURN)
+    {
       sprintf(buf,"x: %ld h: %ld",x,theta);
       sprintf(bufTwo,"y:%d turn",y);
-      break;
-      case SPEC_CASE:
+    }
+    else if(currentState == SPEC_CASE)
+    {
       sprintf(buf,"x: %ld h: %ld",x,theta);
       sprintf(bufTwo,"y:%d spec",y);
-      case CANDLE:
+    }
+    else if(currentState== CANDLE)
+    {
       sprintf(buf,"x: %ld h: %ld",cx,theta);
       sprintf(bufTwo,"y:%d candle",cy);
-      default:
-      break;
-      
+    }
+    else if(currentState = RWALL)
+    {
+      sprintf(buf,"x: %ld h: %ld",cx,theta);
+      sprintf(bufTwo,"y:%d Ret",cy);
     }
     lcd.print(buf);
     lcd.setCursor(0,1);

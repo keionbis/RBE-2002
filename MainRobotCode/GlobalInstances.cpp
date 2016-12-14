@@ -19,3 +19,7 @@ extern void initalizeInstances() {
 
 extern float candlex = 0;
 extern float candley = 0;
+
+extern int leftWallX = 0;
+extern int leftWally = 0;
+extern float leftWallTheta = 0;

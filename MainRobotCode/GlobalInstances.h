@@ -30,7 +30,9 @@ typedef enum RobotState {
   STANDBY,
   SPEC_CASE, //Detected that front wall sensor maxed and other isn't
   FORWARD_DIST,
-  CANDLE
+  CANDLE,
+  RWALL,
+  DONE
 };
 
 extern RobotState currentState;
@@ -38,5 +40,9 @@ extern RobotState previousState;
 
 extern float candlex;
 extern float candley;
+
+extern int leftWallX;
+extern int leftWally;
+extern float leftWallTheta;
 
 #endif
