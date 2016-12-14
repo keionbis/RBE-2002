@@ -91,8 +91,8 @@ void loop() {
       }
     }
     static long long mTime = 0;
-    static bool aimedAtCamera = false;
-    if(millis()-mTime > 10 && !aimedAtCamera)
+    static bool doneCandle = false;
+    if(millis()-mTime > 10 && !doneCandle)
     {
       mTime = millis();
       int error = 125-panOut; //pos-left of center
@@ -101,8 +101,7 @@ void loop() {
       //Serial.println(panOut);
       if(abs(panOut-125) < 5)
       {
-        aimedAtCamera = true;
-        myDriveControl->setBothSetpoints(0,0);
+        myDriveControl->setBothSetpoints(DriveController::DEFAULT_SETPOINT*0.5,DriveController::DEFAULT_SETPOINT*.5);
   /*      for(int i = 0;i<100;i++)
         {
           fan->setPwr(i);
@@ -112,6 +111,10 @@ void loop() {
         WallState newWallState = getWallState(RIGHT_WALL);
         if(newWallState.frontDist >0)
         {
+          doneCandle = true;
+          myDriveControl->setBothSetpoints(0,0);
+          delay(1000);
+          WallState newWallState = getWallState(RIGHT_WALL);
           //candle in range
           candlex = cos(getTheta())*(newWallState.frontDist+(4.5*25.4));
           candley = sin(getTheta())*(newWallState.frontDist+(4.5*25.4));

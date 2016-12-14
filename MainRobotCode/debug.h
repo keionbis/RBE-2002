@@ -28,7 +28,6 @@ static void manageLCD() {
     char buf[25];
     long x = getXLoc()/25.4;
     long theta = (getTheta()*180/PI);
-    //Serial.println(theta);    
     char bufTwo[25];
     long y = (getYLoc()/25.4);
     long cx = candlex;
